@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国甘肃网 - 思政教育平台</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.bootcdn.net/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', '微软雅黑', sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            color: #1e1e1e;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        :root {
+            --purple: #b22222;
+            --purple-light: #b22222;
+            --red-deep: #b22222;
+            --white: #fff;
+        }
+
+        .news-header {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--purple-light) 100%);
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            border-bottom: 6px solid var(--red-deep);
+        }
+
+        .news-header h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .news-header p {
+            font-size: 1.1rem;
+            color: #f0e6ff;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .breadcrumb {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s;
+        }
+
+        .breadcrumb a:hover {
+            background: rgba(255,255,255,0.3);
+            color: #ffd700;
+        }
+
+        .content-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .intro-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-left: 6px solid var(--purple);
+        }
+
+        .section-title {
+            color: var(--purple);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 2rem 0;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 0;
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-color: var(--purple);
+        }
+
+        .info-image {
+            height: 180px;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--purple-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3.5rem;
+        }
+
+        .info-content {
+            padding: 1.5rem;
+        }
+
+        .info-title {
+            color: var(--purple);
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-description {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .files-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .file-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--purple);
+            transition: all 0.3s;
+        }
+
+        .file-card:hover {
+            background: white;
+            transform: translateX(5px);
+        }
+
+        .file-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .file-icon {
+            font-size: 2rem;
+            color: var(--purple);
+        }
+
+        .file-name {
+            color: var(--purple);
+            font-weight: bold;
+            font-size: 1.1rem;
+            word-break: break-word;
+        }
+
+        .file-meta {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-download {
+            background: var(--purple);
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-preview {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-preview:hover {
+            background: #2980b9;
+        }
+
+        .upload-section {
+            background: linear-gradient(135deg, #fbf8db 0%, #f6f1b9 100%);
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin-top: 2rem;
+            border: 3px dashed var(--purple);
+            text-align: center;
+        }
+
+        .upload-area {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .upload-btn {
+            background: var(--purple);
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 12px 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            margin: 8px;
+        }
+
+        .upload-btn:hover {
+            background: #9b59b6;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .files-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .file-actions {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .preview-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+        }
+
+        .preview-modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 900px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .close-modal {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-modal:hover,
+        .close-modal:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .preview-title {
+            color: var(--purple);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .preview-content {
+            min-height: 400px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        #pdf-canvas {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .pdf-controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pdf-controls button {
+            margin: 0 5px;
+            padding: 8px 16px;
+            background: var(--purple);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .pdf-controls button:hover {
+            background: #9b59b6;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            margin: 0 5px;
+            border: 1px solid var(--purple);
+            background: white;
+            color: var(--purple);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .pagination button:hover {
+            background: var(--purple);
+            color: white;
+        }
+
+        .pagination button.active {
+            background: var(--purple);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="news-header">
+    <div class="breadcrumb">
+        <a href="wangye.html"><i class="fas fa-home"></i> 首页</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>中国甘肃网</span>
+    </div>
+    <h1><i class="fas fa-globe"></i> 中国甘肃网</h1>
+    <p>聚焦甘肃发展 · 传播红色文化 · 弘扬时代精神</p>
+</div>
+
+<div class="content-container">
+    <div class="intro-section">
+        <h2 class="section-title"><i class="fas fa-info-circle"></i> 关于中国甘肃网</h2>
+        <p style="color: #555; font-size: 1.1rem; line-height: 1.8;">
+            中国甘肃网是甘肃省重点新闻网站，是甘肃省委省政府的重要舆论阵地。我们致力于传播甘肃声音、讲述甘肃故事、展示甘肃形象，为广大师生提供丰富的甘肃红色文化资源和时政资讯。
+        </p>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-card">
+            <div class="info-image"><i class="fas fa-map-marked-alt"></i></div>
+            <div class="info-content">
+                <div class="info-title">甘肃红色地图</div>
+                <div class="info-description">探索甘肃境内的红色旅游景点和革命遗址，感受红色文化的深厚底蕴。</div>
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="info-image"><i class="fas fa-book-open"></i></div>
+            <div class="info-content">
+                <div class="info-title">甘肃党史资料</div>
+                <div class="info-description">收录甘肃地区党的历史资料、文献档案，传承红色基因。</div>
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="info-image"><i class="fas fa-video"></i></div>
+            <div class="info-content">
+                <div class="info-title">甘肃影像志</div>
+                <div class="info-description">展示甘肃发展变迁的珍贵影像资料，记录时代脉搏。</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="files-section">
+        <h2 class="section-title"><i class="fas fa-folder-open"></i> 资料文件</h2>
+        <div class="files-grid" id="files-grid">
+        </div>
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+    <div class="upload-section">
+        <div class="upload-area">
+            <h3 style="color: #b22222; margin-bottom: 1rem;"><i class="fas fa-cloud-upload-alt"></i> 上传资料</h3>
+            <p style="color: #666; margin-bottom: 1.5rem;">支持上传图片、视频、PDF、文档等格式文件</p>
+            <input type="file" id="file-input" accept=".doc,.docx,.ppt,.pptx,.txt,.pdf,.jpg,.jpeg,.png,.zip,.rar,.7z,.mp4,.avi,.mov,.mkv,.mp3,.wav" multiple style="display: none;">
+            <button class="upload-btn" onclick="document.getElementById('file-input').click()"><i class="fas fa-plus"></i> 选择文件</button>
+            <div id="selected-files" style="margin-top: 1rem; text-align: left;"></div>
+            <div id="progress-bar" style="display: none; margin-top: 1rem;">
+                <div style="background: #e0e0e0; border-radius: 10px; overflow: hidden;">
+                    <div id="progress-fill" style="background: #b22222; height: 10px; width: 0%; transition: width 0.3s;"></div>
+                </div>
+            </div>
+            <button id="start-upload" class="upload-btn" style="display: none; margin-top: 1rem;"><i class="fas fa-upload"></i> 开始上传</button>
+        </div>
+    </div>
+</div>
+
+<div id="preview-modal" class="preview-modal">
+    <div class="preview-modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h3 class="preview-title" id="preview-title"></h3>
+        <div class="preview-content" id="preview-content"></div>
+        <div class="pdf-controls" id="pdf-controls" style="display: none;">
+            <button onclick="prevPage()">上一页</button>
+            <span id="page-info"></span>
+            <button onclick="nextPage()">下一页</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentModule = '中国甘肃网';
+let currentPage = 1;
+const pageSize = 50;
+let totalPages = 1;
+let currentPdfDoc = null;
+let currentPageNum = 1;
+
+function isPreviewable(fileType, fileName) {
+    const ext = fileName.split('.').pop().toLowerCase();
+    return fileType.startsWith('image/') || ext === 'txt' || ext === 'pdf' ||
+           ['mp4', 'avi', 'mov', 'mkv', 'mp3', 'wav'].includes(ext);
+}
+
+function getFileIcon(fileType, fileName) {
+    const ext = fileName.split('.').pop().toLowerCase();
+    const iconMap = {
+        'pdf': 'fas fa-file-pdf',
+        'doc': 'fas fa-file-word',
+        'docx': 'fas fa-file-word',
+        'txt': 'fas fa-file-alt',
+        'jpg': 'fas fa-image',
+        'jpeg': 'fas fa-image',
+        'png': 'fas fa-image',
+        'gif': 'fas fa-image',
+        'mp4': 'fas fa-video',
+        'avi': 'fas fa-video',
+        'mov': 'fas fa-video',
+        'mkv': 'fas fa-video',
+        'mp3': 'fas fa-music',
+        'wav': 'fas fa-music'
+    };
+    return iconMap[ext] || 'fas fa-file';
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function formatTime(timestamp) {
+    return new Date(timestamp).toLocaleString('zh-CN');
+}
+
+async function loadFiles() {
+    try {
+        const response = await fetch(`/api/uploads?module=${currentModule}&page=${currentPage}&page_size=${pageSize}`);
+        if (!response.ok) throw new Error('获取文件列表失败');
+        
+        const result = await response.json();
+        
+        let files = [];
+        if (Array.isArray(result)) {
+            files = result;
+        } else if (result && Array.isArray(result.files)) {
+            files = result.files;
+        }
+        
+        const grid = document.getElementById('files-grid');
+        const pagination = document.getElementById('pagination');
+        
+        if (!files || files.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
+                    <i class="fas fa-globe" style="font-size: 4rem; color: #ddd; margin-bottom: 1rem;"></i>
+                    <h3>暂无资料</h3>
+                    <p>上传的中国甘肃网资料将显示在这里</p>
+                </div>
+            `;
+            pagination.style.display = 'none';
+            return;
+        }
+        
+        grid.innerHTML = files.map(file => {
+            const isPreview = isPreviewable(file.file_type, file.original_name);
+            return `
+                <div class="file-card">
+                    <div class="file-header">
+                        <i class="fas ${getFileIcon(file.file_type, file.original_name)} file-icon"></i>
+                        <div class="file-name">${file.original_name}</div>
+                    </div>
+                    <div class="file-meta">
+                        <div><strong>大小:</strong> ${formatFileSize(file.file_size)}</div>
+                        <div><strong>上传时间:</strong> ${formatTime(file.upload_time)}</div>
+                        <div><strong>上传者:</strong> ${file.uploader || '匿名'}</div>
+                        ${file.description ? `<div><strong>描述:</strong> ${file.description}</div>` : ''}
+                    </div>
+                    <div class="file-actions">
+                        ${isPreview ? `<button class="action-btn btn-preview" onclick="previewFile(${file.id}, '${file.original_name}', '${file.file_type}')"><i class="fas fa-eye"></i> 预览</button>` : ''}
+                        <button class="action-btn btn-download" onclick="downloadFile(${file.id})"><i class="fas fa-download"></i> 下载</button>
+                        <button class="action-btn btn-delete" onclick="deleteFile(${file.id})"><i class="fas fa-trash"></i> 删除</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        if (result && typeof result === 'object') {
+            totalPages = result.total_pages || 1;
+            updatePagination(result.total || 0);
+        } else {
+            totalPages = 1;
+            updatePagination(files.length);
+        }
+        
+    } catch (error) {
+        console.error('加载文件列表失败:', error);
+        document.getElementById('files-grid').innerHTML = '<p style="text-align: center; color: #666;">加载失败，请刷新重试</p>';
+    }
+}
+
+function updatePagination(total) {
+    const pagination = document.getElementById('pagination');
+    
+    if (total <= pageSize) {
+        pagination.style.display = 'none';
+        return;
+    }
+    
+    pagination.style.display = 'block';
+    
+    // 生成页码按钮
+    let buttons = '';
+    const maxButtons = Math.min(totalPages, 5);
+    for (let i = 0; i < maxButtons; i++) {
+        let p = i + 1;
+        if (totalPages > 5 && currentPage > 3) {
+            p = Math.min(currentPage - 2 + i, totalPages);
+        }
+        const activeClass = p === currentPage ? 'class="active"' : '';
+        buttons += '<button onclick="changePage(' + p + ')" ' + activeClass + '>' + p + '</button>';
+    }
+    
+    pagination.innerHTML = `
+        <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>上一页</button>
+        ${buttons}
+        <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>下一页</button>
+    `;
+}
+
+function changePage(page) {
+    if (page < 1 || page > totalPages) return;
+    currentPage = page;
+    loadFiles();
+}
+
+function downloadFile(fileId) {
+    const url = `/api/download/${fileId}`;
+    window.open(url, '_blank');
+}
+
+async function deleteFile(fileId) {
+    if (!confirm('确定要删除这个文件吗？')) return;
+    
+    try {
+        const response = await fetch(`/api/delete/${fileId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            alert('文件删除成功！');
+            loadFiles();
+        } else {
+            alert('文件删除失败！');
+        }
+    } catch (error) {
+        console.error('删除文件失败:', error);
+        alert('删除文件失败，请重试！');
+    }
+}
+
+function previewFile(fileId, fileName, fileType) {
+    const modal = document.getElementById('preview-modal');
+    const previewTitle = document.getElementById('preview-title');
+    const previewContent = document.getElementById('preview-content');
+    const pdfControls = document.getElementById('pdf-controls');
+    
+    previewTitle.textContent = fileName;
+    pdfControls.style.display = 'none';
+    
+    if (!isPreviewable(fileType, fileName)) {
+        previewContent.innerHTML = '<p style="text-align: center; padding: 2rem; color: #666;">该文件类型不支持在线预览，请下载查看</p>';
+        modal.style.display = 'block';
+        return;
+    }
+    
+    const ext = fileName.split('.').pop().toLowerCase();
+    const url = `/api/download/${fileId}`;
+    
+    if (fileType.startsWith('image/')) {
+        previewContent.innerHTML = `<img src="${url}" style="max-width: 100%; max-height: 70vh; display: block; margin: 0 auto;" />`;
+        modal.style.display = 'block';
+    } else if (ext === 'txt') {
+        fetch(url)
+            .then(response => response.text())
+            .then(text => {
+                previewContent.innerHTML = `<pre style="white-space: pre-wrap; word-break: break-all; font-family: '微软雅黑', sans-serif;">${text}</pre>`;
+                modal.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('加载文本失败:', error);
+                previewContent.innerHTML = '<p style="text-align: center; padding: 2rem; color: #666;">无法加载文本文件</p>';
+                modal.style.display = 'block';
+            });
+    } else if (ext === 'pdf') {
+        previewContent.innerHTML = '<canvas id="pdf-canvas"></canvas>';
+        pdfControls.style.display = 'block';
+        modal.style.display = 'block';
+        renderPdf(url);
+    } else if (['mp4', 'avi', 'mov', 'mkv'].includes(ext)) {
+        previewContent.innerHTML = `
+            <video controls style="width: 100%; max-height: 60vh; border-radius: 8px;">
+                <source src="${url}" type="video/mp4">
+                您的浏览器不支持视频播放
+            </video>
+        `;
+        modal.style.display = 'block';
+    } else if (['mp3', 'wav'].includes(ext)) {
+        previewContent.innerHTML = `
+            <div style="text-align: center; padding: 2rem;">
+                <i class="fas fa-music" style="font-size: 5rem; color: #b22222; margin-bottom: 1.5rem;"></i>
+                <h3 style="color: #b22222; margin-bottom: 1rem;">${fileName}</h3>
+                <audio controls style="width: 100%;">
+                    <source src="${url}" type="audio/mpeg">
+                    您的浏览器不支持音频播放
+                </audio>
+            </div>
+        `;
+        modal.style.display = 'block';
+    }
+}
+
+async function renderPdf(url) {
+    const canvas = document.getElementById('pdf-canvas');
+    const ctx = canvas.getContext('2d');
+    const pageInfo = document.getElementById('page-info');
+    
+    try {
+        const pdf = await pdfjsLib.getDocument(url).promise;
+        currentPdfDoc = pdf;
+        currentPageNum = 1;
+        await renderPdfPage(currentPageNum);
+        pageInfo.textContent = `第 ${currentPageNum} / ${pdf.numPages} 页`;
+    } catch (error) {
+        console.error('加载PDF失败:', error);
+        document.getElementById('preview-content').innerHTML = '<p style="text-align: center; padding: 2rem; color: #666;">无法加载PDF文件</p>';
+        document.getElementById('pdf-controls').style.display = 'none';
+    }
+}
+
+async function renderPdfPage(pageNum) {
+    if (!currentPdfDoc) return;
+    
+    const page = await currentPdfDoc.getPage(pageNum);
+    const viewport = page.getViewport({ scale: 1.5 });
+    const canvas = document.getElementById('pdf-canvas');
+    
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    
+    await page.render({
+        canvasContext: canvas.getContext('2d'),
+        viewport: viewport
+    }).promise;
+    
+    document.getElementById('page-info').textContent = `第 ${pageNum} / ${currentPdfDoc.numPages} 页`;
+}
+
+function prevPage() {
+    if (currentPdfDoc && currentPageNum > 1) {
+        currentPageNum--;
+        renderPdfPage(currentPageNum);
+    }
+}
+
+function nextPage() {
+    if (currentPdfDoc && currentPageNum < currentPdfDoc.numPages) {
+        currentPageNum++;
+        renderPdfPage(currentPageNum);
+    }
+}
+
+function closeModal() {
+    document.getElementById('preview-modal').style.display = 'none';
+    currentPdfDoc = null;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadFiles();
+    
+    document.getElementById('preview-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+    
+    // 文件上传功能
+    const fileInput = document.getElementById('file-input');
+    const selectedFilesDiv = document.getElementById('selected-files');
+    const startUploadBtn = document.getElementById('start-upload');
+    const progressBar = document.getElementById('progress-bar');
+    const progressFill = document.getElementById('progress-fill');
+    
+    let selectedFiles = [];
+    
+    fileInput.addEventListener('change', function(e) {
+        selectedFiles = Array.from(e.target.files);
+        
+        if (selectedFiles.length === 0) {
+            selectedFilesDiv.innerHTML = '';
+            startUploadBtn.style.display = 'none';
+            return;
+        }
+        
+        selectedFilesDiv.innerHTML = `
+            <h4>已选择 ${selectedFiles.length} 个文件:</h4>
+            <ul style="margin: 0; padding-left: 1.5rem;">
+                ${selectedFiles.map(file => `<li>${file.name} (${formatFileSize(file.size)})</li>`).join('')}
+            </ul>
+        `;
+        
+        startUploadBtn.style.display = 'inline-flex';
+    });
+    
+    // 上传文件
+    startUploadBtn.addEventListener('click', async function() {
+        const description = prompt('请输入文件描述（可选）:', '');
+        const uploader = prompt('请输入您的姓名（可选）:', '');
+        
+        progressBar.style.display = 'block';
+        startUploadBtn.disabled = true;
+        startUploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 上传中...';
+        
+        let uploadedCount = 0;
+        const totalFilesCount = selectedFiles.length;
+        
+        for (let i = 0; i < selectedFiles.length; i++) {
+            const file = selectedFiles[i];
+            
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('module', currentModule);
+                formData.append('description', description || '');
+                formData.append('uploader', uploader || '匿名');
+                
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error('上传失败: ' + response.statusText);
+                }
+                
+                uploadedCount++;
+                progressFill.style.width = ((uploadedCount / totalFilesCount) * 100) + '%';
+                
+            } catch (error) {
+                console.error('上传错误:', error);
+                alert('上传失败: ' + error.message);
+                break;
+            }
+        }
+        
+        // 上传完成
+        progressFill.style.background = '#27ae60';
+        startUploadBtn.innerHTML = '<i class="fas fa-check"></i> 上传完成';
+        
+        setTimeout(function() {
+            progressBar.style.display = 'none';
+            startUploadBtn.style.display = 'none';
+            selectedFilesDiv.innerHTML = '';
+            fileInput.value = '';
+            startUploadBtn.disabled = false;
+            startUploadBtn.innerHTML = '<i class="fas fa-upload"></i> 开始上传';
+            
+            // 重新加载文件列表
+            loadFiles();
+        }, 1500);
+    });
+});
+</script>
+
+</body>
+</html>

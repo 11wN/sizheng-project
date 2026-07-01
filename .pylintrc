@@ -1,0 +1,49 @@
+[MESSAGES CONTROL]
+# 禁用特定的警告
+disable=
+    # SQL相关的警告
+    sql-injection,
+    # 函数命名规范
+    invalid-name,
+    # 内置函数重命名
+    redefined-builtin,
+    # 未使用的导入
+    unused-import,
+    # 行长度限制
+    line-too-long,
+    # 拼写检查
+    spelling-error
+
+[BASIC]
+# 函数命名规则 - 允许大写字母
+function-naming-style=any
+
+# 变量命名规则 - 允许大写字母
+variable-naming-style=any
+
+# 常量命名规则 - 允许小写字母
+const-naming-style=any
+
+# 类命名规则 - 允许驼峰命名
+class-naming-style=any
+
+[TYPECHECK]
+# 禁用类型检查警告
+disable=missing-docstring,too-few-public-methods
+
+[FORMAT]
+# 最大行长度
+max-line-length=120
+
+# 缩进设置
+indent-string='    '
+
+[DESIGN]
+# 最大函数参数数量
+max-args=10
+
+# 最大函数行数
+max-locals=25
+
+# 最大函数复杂度
+max-complexity=15

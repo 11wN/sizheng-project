@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>红色思政网 · 铸魂育人</title>
+    <!-- 使用简洁的 Font Awesome 图标库 (v6 免费版) 增加视觉细节 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', '微软雅黑', sans-serif;
+        }
+
+        body {
+            background-color: #fff5f0;  /* 极浅红底，烘托氛围 */
+            color: #1e1e1e;              /* 黑色字体为主 */
+            line-height: 1.5;
+        }
+
+        /* 主色调：红色(#b10707 或 #c0392b)，黄色(#f9b83c 或 #f1c40f)辅助 */
+        :root {
+            --red-deep: #b22222;          /* 耐火砖红 */
+            --red-bright: #c0392b;
+            --yellow-soft: #f9c74f;
+            --yellow-bright: #f4d03f;
+            --black: #222;
+            --white: #fff;
+            --gray-light: #fef7f2;
+        }
+
+        /* 主标题 */
+        .main-header {
+            background-color: var(--red-deep);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border-bottom: 6px solid var(--yellow-soft);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-header .img1{
+            margin: -20px 10px;
+            padding: 10px;
+            padding-left: 10px;
+            width: 200px;
+            height: 200px;
+            float: left;
+
+        }
+
+         .main-header .img2{
+            margin: -20px 10px;
+            padding: 10px;
+            padding-right: 10px;
+            width: 200px;
+            height: 200px;
+            float: right;
+
+        }
+
+        .main-header h1 {
+            font-size: 3.2rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-shadow: 3px 3px 0 #8b0000;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .main-header p {
+            font-size: 1.3rem;
+            color: #ffe5b4;
+            font-style: italic;
+            border-top: 2px dashed var(--yellow-soft);
+            display: inline-block;
+            padding-top: 0.5rem;
+        }
+
+        /* 网格容器：七个卡片，三列布局，第七个占满整行 */
+        .card-grid {
+            max-width: 1400px;
+            margin: 2.5rem auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        /* 通用卡片样式 */
+        .module-card {
+            background-color: var(--white);
+            border-radius: 28px 28px 20px 20px;
+            box-shadow: 0 12px 24px -8px rgba(160, 0, 0, 0.3);
+            border: 2px solid var(--red-deep);
+            transition: transform 0.2s ease, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .module-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px -6px #a52a2a80;
+        }
+
+        /* 卡片头部——模块主标题，红色背景，白色文字，带黄色装饰 */
+        .card-header {
+            background-color: var(--red-deep);
+            padding: 1rem 1.2rem;
+            border-bottom: 3px solid var(--yellow-bright);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-header a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.2s;
+        }
+
+        .card-header a i {
+            color: var(--yellow-bright);
+            font-size: 2rem;
+        }
+
+        .card-header a:hover {
+            color: #ffe484;
+        }
+
+        /* 卡片主体内容 */
+        .card-body {
+            padding: 1.5rem 1.2rem 1.2rem;
+            flex: 1;
+            background: linear-gradient(145deg, #fffcf8, #ffffff);
+        }
+
+        /* 子模块列表区 (独立模块) */
+        .sub-module-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 10px;
+            margin-bottom: 22px;
+            border-bottom: 1px dashed #e0a8a8;
+            padding-bottom: 18px;
+        }
+
+        .sub-module-item a {
+            display: inline-block;
+            background-color: var(--yellow-soft);
+            color: var(--black);
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            border: 1px solid #d45b2b;
+            box-shadow: 0 3px 0 #bb3b0e;
+            transition: all 0.15s;
+        }
+
+        .sub-module-item a:hover {
+            background-color: #fcd34d;
+            transform: scale(1.02);
+            box-shadow: 0 4px 0 #a1300a;
+        }
+
+        .sub-module-item a i {
+            margin-right: 4px;
+            color: #b13e1c;
+        }
+
+        /* 无子模块的卡片内，放一些占位内容（校园采风、心得体会、留言板） */
+        .preview-content {
+            background-color: #fff2e6;
+            border-radius: 18px;
+            padding: 1rem;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--yellow-bright);
+            color: #2c1810;
+        }
+
+        .preview-content .news-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid #ffc2a1;
+        }
+
+        .preview-content .news-item i {
+            color: var(--red-deep);
+            width: 22px;
+        }
+
+        /* 上传区域 (模拟) */
+        .upload-area {
+            margin-top: 12px;
+            border: 2px dashed #e6a17e;
+            border-radius: 20px;
+            padding: 14px 10px;
+            background-color: #ffefe6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .upload-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #7b3f00;
+            font-size: 0.95rem;
+        }
+
+        .upload-info i {
+            font-size: 1.8rem;
+            color: var(--red-deep);
+        }
+
+        .upload-btn {
+            background-color: var(--yellow-bright);
+            border: none;
+            color: #4a2512;
+            font-weight: bold;
+            padding: 10px 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 0 #b7682c;
+            transition: 0.1s ease;
+            border: 1px solid #d97839;
+        }
+
+        .upload-btn:hover {
+            background-color: #fce184;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #a15326;
+        }
+
+        .upload-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #9b4f24;
+        }
+
+        /* 第七个卡片单独一行，grid-column让它跨列 */
+        .card-span-full {
+            grid-column: 1 / -1;
+        }
+
+        /* 关于我们内部有六个子模块，确保排列美观 */
+        .about-six {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 10px 0 18px;
+        }
+
+        /* 页脚 */
+        footer {
+            background-color: #360a0a;
+            color: #ffc299;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            border-top: 5px solid var(--yellow-soft);
+        }
+
+        footer span {
+            color: #f7d44a;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 900px) {
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .card-span-full {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .main-header h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+        /* 辅助黄色点缀 */
+        .dot-yellow {
+            width: 12px;
+            height: 12px;
+            background-color: var(--yellow-bright);
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 4px;
+        }
+
+        /* 独立模块链接新页面 (所有独立模块均已设置 target="_blank") */
+        /* 此处样式仅微调 */
+    </style>
+</head>
+<body>
+
+<header class="main-header">
+    <img src="./1.jpg" alt="" class="img1">
+    <img src="./2.jpg" alt="" class="img2">
+    <h1>🔴 红心铸魂 · 思政育人</h1>
+    <p>—— 红色文化主题教育网站 · 传承基因 培根铸魂 ——</p>
+    <div style="margin-top: 10px;">
+        <span class="dot-yellow"></span><span class="dot-yellow"></span><span class="dot-yellow"></span>
+    </div>
+</header>
+
+<main>
+    <div class="card-grid">
+
+        <!-- 模块1: 中国甘肃网 (主模块+子模块：无独立子模块，但新闻条目作为预览) -->
+        <div class="module-card">
+            <div class="card-header">
+                <a href="zhongguogansu.html" target="_blank" title="中国甘肃网（点击进入主页面）">
+                    <i class="fas fa-globe"></i> 中国甘肃网
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="preview-content">
+                    <div class="news-item"><i class="fas fa-caret-right"></i> 甘肃红色地图·探寻革命足迹</div>
+                    <div class="news-item"><i class="fas fa-caret-right"></i> 甘肃党史资料·传承红色基因</div>
+                    <div class="news-item"><i class="fas fa-caret-right"></i> 甘肃影像志·记录时代变迁</div>
+                </div>
+                <div class="upload-area">
+                    <div class="upload-info">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>支持图片、视频、文字</span>
+                    </div>
+                    <button class="upload-btn" onclick="alert('📤 模拟上传：可上传甘肃相关资料')"><i class="fas fa-plus-circle"></i> 上传资料</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模块2: 时政要闻 (主模块+子模块：无独立子模块，但新闻条目作为预览) -->
+        <div class="module-card">
+            <div class="card-header">
+                <a href="shizhengyaowen.html" target="_blank" title="时政要闻（点击进入主页面）">
+                    <i class="fas fa-newspaper"></i> 时政要闻
+                </a>
+            </div>
+            <div class="card-body">
+                <!-- 新闻预览（非独立模块，仅为展示内容） -->
+                <div class="preview-content">
+                    <div class="news-item"><i class="fas fa-caret-right"></i> 全国两会胜利闭幕·高质量发展蓝图</div>
+                    <div class="news-item"><i class="fas fa-caret-right"></i> 总书记考察红色故土纪实</div>
+                    <div class="news-item"><i class="fas fa-caret-right"></i> 思政教育数字化转型推进会召开</div>
+                </div>
+                <!-- 上传区（每个模块独立上传模拟） -->
+                <div class="upload-area">
+                    <div class="upload-info">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>支持图片、视频、文字</span>
+                    </div>
+                    <button class="upload-btn" onclick="alert('📤 模拟上传：可上传新闻图片/视频/文稿')"><i class="fas fa-plus-circle"></i> 上传资料</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模块2: 红色资料 (下含5个独立子模块) 名称暂定 -->
+        <div class="module-card">
+            <div class="card-header">
+                <a href="hongse.html" target="_blank" title="红色资料（主页面）">
+                    <i class="fas fa-book-open"></i> 红色资料
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="sub-module-list">
+                    <!-- 五个独立子模块 点击均新页面 -->
+                    <span class="sub-module-item"><a href="gemingwenxian.html" target="_blank"><i class="fas fa-scroll"></i> 革命文献</a></span>
+                    <span class="sub-module-item"><a href="yinglieshiji.html" target="_blank"><i class="fas fa-landmark"></i> 英烈事迹</a></span>
+                    <span class="sub-module-item"><a href="hongsejingdian.html" target="_blank"><i class="fas fa-radio"></i> 红色经典</a></span>
+                    <span class="sub-module-item"><a href="dangshibaike.html" target="_blank"><i class="fas fa-microfilm"></i> 党史百科</a></span>
+                    <span class="sub-module-item"><a href="hongseyingyin.html" target="_blank"><i class="fas fa-photo-film"></i> 红色影音</a></span>
+                </div>
+                <div class="upload-area">
+                    <div class="upload-info"><i class="fas fa-cloud-upload-alt"></i> 请点击上方模块进入上传</div>
+                    <button class="upload-btn" onclick="alert('请点击上方具体模块进入上传页面')"><i class="fas fa-plus-circle"></i> 上传</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模块3: 思政实践 (下含4个独立子模块) -->
+        <div class="module-card">
+            <div class="card-header">
+                <a href="sizhengshijian.html" target="_blank" title="思政实践主页面">
+                    <i class="fas fa-people-arrows"></i> 思政实践
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="sub-module-list">
+                    <!-- 四个思政实践子模块 -->
+                    <span class="sub-module-item"><a href="shijiananli.html" target="_blank"><i class="fas fa-book"></i> 甘肃红色文化</a></span>
+                    <span class="sub-module-item"><a href="chengguozhanshi.html" target="_blank"><i class="fas fa-trophy"></i> 习近平新时代中国特色社会主义思想概论</a></span>
+                    <span class="sub-module-item"><a href="jingyanjiaoliu.html" target="_blank"><i class="fas fa-comments"></i> 毛泽东思想和中国特色社会主义理论体系概论</a></span>
+                    <span class="sub-module-item"><a href="ziyuanfenxiang.html" target="_blank"><i class="fas fa-share-alt"></i> 思想道德与法治</a></span>
+                </div>
+                <div class="upload-area">
+                    <div class="upload-info"><i class="fas fa-cloud-upload-alt"></i> 请点击上方模块进入上传</div>
+                    <button class="upload-btn" onclick="alert('请点击上方具体模块进入上传页面')"><i class="fas fa-plus-circle"></i> 上传</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模块4: 校园采风 (无独立子模块，展示校园文化预览) -->
+        <div class="module-card">
+            <div class="card-header">
+                <a href="xiaoyuancaifeng.html" target="_blank" title="校园采风主页">
+                    <i class="fas fa-school"></i> 校园采风
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="preview-content">
+                    <div class="news-item"><i class="fas fa-image"></i> “铭记抗战历史”传承红色基因抗战主题展览活动</div>
+                    <div class="news-item"><i class="fas fa-video"></i> “弘扬奉献精神，勇担时代使命”，“学雷锋”活动月启动仪式</div>
+                    <div class="news-item"><i class="fas fa-palette"></i> 弘扬雷锋精神活动</div>
+                </div>
+                <div class="upload-area">
+                    <div class="upload-info"><i class="fas fa-cloud-upload-alt"></i> 上传校园影像</div>
+                    <button class="upload-btn" onclick="alert('📸 模拟上传：校园采风')"><i class="fas fa-plus-circle"></i> 上传</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模块5: 心得体会 (无独立子模块) -->
+        <div class="module-card">
+            <div class="card-header">
+                <a href="xindetihui.html" target="_blank" title="心得体会主页面">
+                    <i class="fas fa-pen-fancy"></i> 心得体会
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="preview-content">
+                    <div class="news-item"><i class="fas fa-quote-left"></i> 2023级 张华：参观一大感悟</div>
+                    <div class="news-item"><i class="fas fa-quote-left"></i> 教师：思政课教学实践</div>
+                    <div class="news-item"><i class="fas fa-quote-left"></i> 红色读书会优秀心得</div>
+                </div>
+                <div class="upload-area">
+                    <div class="upload-info"><i class="fas fa-cloud-upload-alt"></i> 上传文字/视频心得</div>
+                    <button class="upload-btn" onclick="alert('📝 模拟上传：心得体会')"><i class="fas fa-plus-circle"></i> 上传</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模块6: 关于我们 (下含3个独立子模块) -->
+        <div class="module-card">
+            <div class="card-header">
+                <a href="guanyuwomen.html" target="_blank" title="关于我们主页">
+                    <i class="fas fa-circle-info"></i> 关于我们
+                </a>
+            </div>
+            <div class="card-body">
+                <!-- 三个独立模块 -->
+                <div class="about-six">
+                    <span class="sub-module-item"><a href="jigoujieshao.html" target="_blank"><i class="fas fa-building"></i> 团队介绍</a></span>
+                    <span class="sub-module-item"><a href="fazhanlicheng.html" target="_blank"><i class="fas fa-chart-line"></i> 团队宣言</a></span>
+                </div>
+                <div class="upload-area">
+                    <div class="upload-info"><i class="fas fa-cloud-upload-alt"></i> 请点击上方模块进入上传</div>
+                    <button class="upload-btn" onclick="alert('请点击上方具体模块进入上传页面')"><i class="fas fa-plus-circle"></i> 上传</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模块7: 留言板 (无独立子模块，单独一行) 加上类card-span-full -->
+        <div class="module-card card-span-full">
+            <div class="card-header">
+                <a href="liuyanban.html" target="_blank" title="留言板主页">
+                    <i class="fas fa-comments"></i> 留言板
+                </a>
+            </div>
+            <div class="card-body" style="display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 20px;">
+                <div style="flex: 2; min-width: 220px;">
+                    <div class="preview-content" style="margin-bottom: 0;">
+                        <i class="fas fa-comment-dots"></i> 最新留言：期待更多红色讲座！<br>
+                        <i class="fas fa-comment-dots"></i> 建议增加实践视频专区。
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <div class="upload-area" style="margin-top: 0;">
+                        <div class="upload-info"><i class="fas fa-cloud-upload-alt"></i> 可上传留言反馈</div>
+                        <button class="upload-btn" onclick="alert('💬 模拟上传：留言板附件')"><i class="fas fa-plus-circle"></i> 上传</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p><span>❤️ 红色思政网 · 永远跟党走 ❤️</span></p>
+    <p style="margin-top: 1rem; font-size: 0.9rem;">传承红色基因 | 所有独立模块均可点击并在新页面打开<br>每个模块均支持资料上传</p>
+    <p style="font-size:0.8rem; opacity:0.8;">© 2026 思政教育 · 红色主题文化</p>
+</footer>
+
+<!-- 文件上传功能脚本 -->
+<script>
+// 文件上传功能
+function setupUploadFunctionality() {
+    // 为每个上传按钮添加事件监听
+    const uploadButtons = document.querySelectorAll('.upload-btn');
+    
+    uploadButtons.forEach((button, index) => {
+        // 移除原有的onclick事件
+        button.onclick = null;
+        
+        // 创建文件输入元素
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.style.display = 'none';
+        fileInput.accept = '.jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.ppt,.pptx,.txt,.mp4,.mov,.avi';
+        fileInput.multiple = true;
+        
+        // 获取对应的模块信息
+        const card = button.closest('.module-card');
+        const moduleName = card.querySelector('.card-header a').textContent.trim();
+        
+        // 添加到DOM
+        button.parentNode.appendChild(fileInput);
+        
+        // 按钮点击事件
+        button.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        // 文件选择事件
+        fileInput.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                showUploadModal(moduleName, e.target.files);
+                fileInput.value = ''; // 重置输入
+            }
+        });
+    });
+}
+
+// 显示上传模态框
+function showUploadModal(moduleName, files) {
+    // 创建模态框
+    const modal = document.createElement('div');
+    modal.className = 'upload-modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-cloud-upload-alt"></i> 上传文件到 ${moduleName}</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="file-list"></div>
+                <div class="upload-form">
+                    <div class="form-group">
+                        <label>文件描述（可选）:</label>
+                        <textarea id="file-description" placeholder="请输入文件描述..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>上传者:</label>
+                        <input type="text" id="uploader-name" placeholder="请输入您的姓名（可选）">
+                    </div>
+                </div>
+                <div class="upload-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="progress-text">准备上传...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel">取消</button>
+                <button class="btn-upload">开始上传</button>
+            </div>
+        </div>
+    `;
+    
+    // 添加到页面
+    document.body.appendChild(modal);
+    
+    // 显示文件列表
+    const fileList = modal.querySelector('.file-list');
+    Array.from(files).forEach(file => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        fileItem.innerHTML = `
+            <i class="fas fa-file"></i>
+            <span class="file-name">${file.name}</span>
+            <span class="file-size">(${formatFileSize(file.size)})</span>
+        `;
+        fileList.appendChild(fileItem);
+    });
+    
+    // 事件监听
+    modal.querySelector('.close-btn').addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    modal.querySelector('.btn-cancel').addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    modal.querySelector('.btn-upload').addEventListener('click', () => {
+        startUpload(moduleName, files, modal);
+    });
+    
+    // 点击模态框外部关闭
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+}
+
+// 开始上传文件
+async function startUpload(moduleName, files, modal) {
+    const description = modal.querySelector('#file-description').value;
+    const uploader = modal.querySelector('#uploader-name').value || '匿名';
+    const progressBar = modal.querySelector('.progress-fill');
+    const progressText = modal.querySelector('.progress-text');
+    const uploadBtn = modal.querySelector('.btn-upload');
+    
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = '上传中...';
+    
+    let uploadedCount = 0;
+    const totalFiles = files.length;
+    
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        
+        // 更新进度
+        progressText.textContent = `上传中: ${file.name} (${i + 1}/${totalFiles})`;
+        progressBar.style.width = `${(i / totalFiles) * 100}%`;
+        
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('module', moduleName);
+            formData.append('description', description);
+            formData.append('uploader', uploader);
+            
+            const response = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!response.ok) {
+                throw new Error(`上传失败: ${response.statusText}`);
+            }
+            
+            const result = await response.json();
+            uploadedCount++;
+            
+            // 更新进度
+            progressBar.style.width = `${((i + 1) / totalFiles) * 100}%`;
+            
+        } catch (error) {
+            console.error('上传错误:', error);
+            progressText.textContent = `上传失败: ${error.message}`;
+            progressBar.style.background = '#e74c3c';
+            return;
+        }
+    }
+    
+    // 上传完成
+    progressText.textContent = `上传完成！成功上传 ${uploadedCount} 个文件`;
+    progressBar.style.background = '#27ae60';
+    
+    setTimeout(() => {
+        document.body.removeChild(modal);
+        alert(`✅ 文件上传成功！\n模块: ${moduleName}\n文件数: ${uploadedCount}`);
+    }, 1500);
+}
+
+// 格式化文件大小
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+    setupUploadFunctionality();
+});
+</script>
+
+<style>
+/* 上传模态框样式 */
+.upload-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.modal-header {
+    background: var(--red-deep);
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.file-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.file-item:last-child {
+    border-bottom: none;
+}
+
+.file-item i {
+    color: var(--red-deep);
+    margin-right: 10px;
+    width: 20px;
+}
+
+.file-name {
+    flex: 1;
+    font-weight: 500;
+}
+
+.file-size {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.upload-form {
+    margin: 1rem 0;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group textarea,
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.form-group textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+.upload-progress {
+    margin: 1rem 0;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--yellow-bright);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    text-align: center;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    background: #f9f9f9;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.btn-cancel, .btn-upload {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.btn-upload {
+    background: var(--red-deep);
+    color: white;
+}
+
+.btn-cancel:hover {
+    background: #d0d0d0;
+}
+
+.btn-upload:hover {
+    background: #a01c1c;
+}
+
+.btn-upload:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+</style>
+
+<!-- 所有独立链接已使用 target="_blank" 跳转新页面（about:blank） -->
+</body>
+</html>

@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>17孙振豪 - 毛泽东思想和中国特色社会主义理论体系概论</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+        // 设置PDF.js worker路径
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.bootcdn.net/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', '微软雅黑', sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            color: #1e1e1e;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        :root {
+            --blue: #b22222;
+            --blue-light: #b22222;
+            --red-deep: #b22222;
+            --white: #fff;
+        }
+
+        .experience-header {
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%);
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            border-bottom: 6px solid var(--red-deep);
+        }
+
+        .experience-header h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .experience-header p {
+            font-size: 1.1rem;
+            color: #e6f2ff;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .breadcrumb {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s;
+        }
+
+        .breadcrumb a:hover {
+            background: rgba(255,255,255,0.3);
+            color: #ffd700;
+        }
+
+        .content-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            color: var(--blue);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .files-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .file-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--blue);
+            transition: all 0.3s;
+        }
+
+        .file-card:hover {
+            background: white;
+            transform: translateX(5px);
+        }
+
+        .file-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .file-icon {
+            font-size: 2rem;
+            color: var(--blue);
+        }
+
+        .file-name {
+            color: var(--blue);
+            font-weight: bold;
+            font-size: 1.1rem;
+            word-break: break-word;
+        }
+
+        .file-meta {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-download {
+            background: var(--blue);
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .upload-section {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f2ff 100%);
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin-top: 2rem;
+            border: 3px dashed var(--blue);
+            text-align: center;
+        }
+
+        .upload-area {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .upload-btn {
+            background: var(--blue);
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 12px 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            margin: 8px;
+        }
+
+        .upload-btn:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .files-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 分页样式 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .pagination-info { color: #666; font-size: 0.9rem; }
+        .pagination-buttons { display: flex; align-items: center; gap: 10px; }
+        .pagination-btn {
+            padding: 8px 16px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .pagination-btn:hover:not(:disabled) { background: var(--blue-light); }
+        .pagination-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .pagination-page { font-weight: bold; color: var(--blue); padding: 0 10px; }
+        
+        /* 预览模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 10px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .modal-title {
+            color: var(--blue);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .preview-content {
+            width: 100%;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 60vh;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .preview-text {
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.5;
+            color: #333;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header class="experience-header">
+        <div class="breadcrumb">
+            <a href="wangye.html"><i class="fas fa-home"></i> 首页</a>
+            <a href="sizhengshijian.html">思政实践</a>
+            <a href="jingyanjiaoliu.html">毛概</a>
+            <span style="background: rgba(255,255,255,0.3); color: #ffd700;">17孙振豪</span>
+        </div>
+        <h1><i class="fas fa-book-open"></i> 17孙振豪</h1>
+        <p>教学经验 · 实践心得 · 成果总结 · 交流分享</p>
+    </header>
+
+    <div class="content-container">
+        <!-- 文件展示区域 -->
+        <div class="files-section">
+            <h2 class="section-title"><i class="fas fa-archive"></i> 实践资料</h2>
+            <div class="files-grid" id="file-list">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
+                    <i class="fas fa-book-open" style="font-size: 4rem; color: #ddd; margin-bottom: 1rem;"></i>
+                    <h3>暂无资料</h3>
+                    <p>上传的文件将显示在这里</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 分页控件 -->
+        <div class="pagination" id="pagination">
+            <div class="pagination-info" id="pagination-info"></div>
+            <div class="pagination-buttons">
+                <button class="pagination-btn" id="prev-page" onclick="changePage(-1)">
+                    <i class="fas fa-chevron-left"></i> 上一页
+                </button>
+                <span class="pagination-page" id="current-page">1</span>
+                <button class="pagination-btn" id="next-page" onclick="changePage(1)">
+                    下一页 <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 上传区域 -->
+        <div class="upload-section">
+            <h2 class="section-title"><i class="fas fa-cloud-upload-alt"></i> 上传资料</h2>
+            <div class="upload-area">
+                <p style="margin-bottom: 1.5rem; color: #666;">
+                    上传教学经验、实践心得、成果总结等相关资料
+                </p>
+                
+                <input type="file" id="file-input" accept=".doc,.docx,.ppt,.pptx,.txt,.pdf,.jpg,.jpeg,.png,.zip,.rar,.7z,.mp4,.avi,.mov,.mkv,.mp3,.wav" multiple style="display: none;">
+                <button class="upload-btn" onclick="document.getElementById('file-input').click()">
+                    <i class="fas fa-file-upload"></i> 选择文件
+                </button>
+                
+                <div id="selected-files" style="margin-top: 1.5rem; text-align: left; background: white; padding: 1rem; border-radius: 8px; max-height: 150px; overflow-y: auto;"></div>
+                
+                <div style="width: 100%; height: 5px; background: #f0f0f0; border-radius: 3px; overflow: hidden; margin: 1rem 0; display: none;" id="progress-bar">
+                    <div style="height: 100%; background: var(--blue); width: 0%; transition: width 0.3s ease;" id="progress-fill"></div>
+                </div>
+                
+                <button class="upload-btn" id="start-upload" style="display: none; background: var(--red-deep);">
+                    <i class="fas fa-upload"></i> 开始上传
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 预览模态框 -->
+    <div id="preview-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="preview-title">文件预览</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="preview-content" id="preview-content">
+                <!-- 预览内容将在这里动态添加 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 文件处理函数
+        function getFileIcon(fileType, fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            
+            if (fileType.includes('pdf')) {
+                return 'fa-file-pdf';
+            } else if (fileType.includes('word') || fileType.includes('document')) {
+                return 'fa-file-word';
+            } else if (fileType.includes('powerpoint') || fileType.includes('presentation')) {
+                return 'fa-file-powerpoint';
+            } else if (fileType.startsWith('image/')) {
+                return 'fa-file-image';
+            } else if (ext === 'txt') {
+                return 'fa-file-alt';
+            } else {
+                return 'fa-file';
+            }
+        }
+
+        // 检查文件是否可预览
+        function isPreviewable(fileType, fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            return fileType.startsWith('image/') || ext === 'txt' || ext === 'pdf' ||
+                   ['mp4', 'avi', 'mov', 'mkv', 'mp3', 'wav'].includes(ext);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatTime(timestamp) {
+            return new Date(timestamp).toLocaleString('zh-CN');
+        }
+
+        // 下载文件
+        async function downloadFile(fileId) {
+            try {
+                const response = await fetch(`/api/download/${fileId}`);
+                if (!response.ok) throw new Error('下载失败');
+                
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = response.headers.get('Content-Disposition')?.split('filename=')[1]?.replace(/"/g, '') || 'file';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+            } catch (error) {
+                console.error('下载失败:', error);
+                alert('文件下载失败');
+            }
+        }
+
+        // 删除文件
+        async function deleteFile(fileId) {
+            if (!confirm('确定要删除这个文件吗？')) return;
+            
+            try {
+                const response = await fetch(`/api/delete/${fileId}`, { method: 'DELETE' });
+                if (!response.ok) throw new Error('删除失败');
+                
+                alert('文件删除成功');
+                loadFiles();
+                
+            } catch (error) {
+                console.error('删除失败:', error);
+                alert('文件删除失败');
+            }
+        }
+
+        // 文件选择处理
+        const fileInput = document.getElementById('file-input');
+        const selectedFilesDiv = document.getElementById('selected-files');
+        const startUploadBtn = document.getElementById('start-upload');
+        const progressBar = document.getElementById('progress-bar');
+        const progressFill = document.getElementById('progress-fill');
+        
+        let selectedFiles = [];
+        
+        fileInput.addEventListener('change', function(e) {
+            selectedFiles = Array.from(e.target.files);
+            
+            if (selectedFiles.length === 0) {
+                selectedFilesDiv.innerHTML = '';
+                startUploadBtn.style.display = 'none';
+                return;
+            }
+            
+            selectedFilesDiv.innerHTML = `
+                <h4>已选择 ${selectedFiles.length} 个文件:</h4>
+                <ul style="margin: 0; padding-left: 1.5rem;">
+                    ${selectedFiles.map(file => `<li>${file.name} (${formatFileSize(file.size)})</li>`).join('')}
+                </ul>
+            `;
+            
+            startUploadBtn.style.display = 'inline-flex';
+        });
+
+        // 上传文件
+        startUploadBtn.addEventListener('click', async function() {
+            const description = prompt('请输入文件描述（可选）:', '');
+            const uploader = prompt('请输入您的姓名（可选）:', '');
+            
+            progressBar.style.display = 'block';
+            startUploadBtn.disabled = true;
+            startUploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 上传中...';
+            
+            let uploadedCount = 0;
+            const totalFiles = selectedFiles.length;
+            
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('module', '毛概17孙振豪');
+                    formData.append('description', description || '');
+                    formData.append('uploader', uploader || '匿名');
+                    
+                    const response = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`上传失败: ${response.statusText}`);
+                    }
+                    
+                    uploadedCount++;
+                    progressFill.style.width = `${(uploadedCount / totalFiles) * 100}%`;
+                    
+                } catch (error) {
+                    console.error('上传错误:', error);
+                    alert(`上传失败: ${error.message}`);
+                    break;
+                }
+            }
+            
+            // 上传完成
+            progressFill.style.background = '#27ae60';
+            startUploadBtn.innerHTML = '<i class="fas fa-check"></i> 上传完成';
+            
+            setTimeout(() => {
+                progressBar.style.display = 'none';
+                startUploadBtn.style.display = 'none';
+                selectedFilesDiv.innerHTML = '';
+                fileInput.value = '';
+                startUploadBtn.disabled = false;
+                startUploadBtn.innerHTML = '<i class="fas fa-upload"></i> 开始上传';
+                
+                // 重新加载文件列表
+                loadFiles();
+            }, 2000);
+        });
+
+        // 全局分页变量
+        let currentPage = 1;
+        const pageSize = 50;
+        let totalPages = 1;
+        let currentModule = '毛概17孙振豪';
+
+        // 加载文件列表
+        async function loadFiles() {
+            try {
+                const response = await fetch(`/api/uploads?module=${currentModule}&page=${currentPage}&page_size=${pageSize}`);
+                if (!response.ok) throw new Error('获取文件列表失败');
+                
+                const result = await response.json();
+                let files = [];
+                if (Array.isArray(result)) {
+                    files = result;
+                } else if (result && Array.isArray(result.files)) {
+                    files = result.files;
+                }
+                
+                const fileList = document.getElementById('file-list');
+                const pagination = document.getElementById('pagination');
+                
+                if (files.length === 0) {
+                    fileList.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #666;">
+                            <i class="fas fa-book-open" style="font-size: 4rem; color: #ddd; margin-bottom: 1rem;"></i>
+                            <h3>暂无资料</h3>
+                            <p>上传的文件将显示在这里</p>
+                        </div>
+                    `;
+                    if (pagination) pagination.style.display = 'none';
+                    return;
+                }
+                
+                fileList.innerHTML = files.map(file => {
+                    const isPreview = isPreviewable(file.file_type, file.original_name);
+                    return `
+                    <div class="file-card">
+                        <div class="file-icon">
+                            <i class="fas ${getFileIcon(file.file_type, file.original_name)}"></i>
+                        </div>
+                        <div class="file-info">
+                            <h4 style="color: var(--blue); margin-bottom: 0.5rem;">${file.original_name}</h4>
+                            <div style="color: #666; font-size: 0.85rem;">
+                                <p><i class="fas fa-weight-hanging"></i> ${formatFileSize(file.file_size)}</p>
+                                <p><i class="fas fa-clock"></i> ${formatTime(file.upload_time)}</p>
+                                <p><i class="fas fa-user"></i> ${file.uploader || '匿名'}</p>
+                                ${file.description ? `<p><i class="fas fa-info-circle"></i> ${file.description}</p>` : ''}
+                            </div>
+                        </div>
+                        <div class="file-actions">
+                            ${isPreview ? `
+                            <button class="action-btn" style="background: #3498db; color: white;" onclick="previewFile(${file.id}, '${file.original_name}', '${file.file_type}')">
+                                <i class="fas fa-eye"></i> 预览
+                            </button>
+                            ` : ''}
+                            <button class="action-btn" style="background: #3498db; color: white;" onclick="downloadFile(${file.id})"><i class="fas fa-download"></i> 下载</button>
+                            <button class="action-btn" style="background: #e74c3c; color: white;" onclick="deleteFile(${file.id})"><i class="fas fa-trash"></i> 删除</button>
+                        </div>
+                    </div>
+                `;
+                }).join('');
+                
+                // 更新分页信息
+                if (result && typeof result === 'object') {
+                    totalPages = result.total_pages || 1;
+                    updatePagination(result.total || 0);
+                } else {
+                    totalPages = 1;
+                    updatePagination(files.length);
+                }
+                
+            } catch (error) {
+                console.error('加载文件错误:', error);
+                document.getElementById('file-list').innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #e74c3c;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h3>加载失败</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 更新分页控件
+        function updatePagination(total) {
+            const pagination = document.getElementById('pagination');
+            const prevBtn = document.getElementById('prev-page');
+            const nextBtn = document.getElementById('next-page');
+            const currentPageEl = document.getElementById('current-page');
+            const paginationInfo = document.getElementById('pagination-info');
+            if (!pagination) return;
+            pagination.style.display = 'flex';
+            if (paginationInfo) paginationInfo.textContent = `共 ${total} 个文件`;
+            if (currentPageEl) currentPageEl.textContent = `${currentPage} / ${totalPages}`;
+            if (prevBtn) prevBtn.disabled = currentPage <= 1;
+            if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+        }
+
+        // 切换页面
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                loadFiles();
+            }
+        }
+
+        // 预览文件
+        async function previewFile(fileId, fileName, fileType) {
+            try {
+                const response = await fetch(`/api/download/${fileId}`);
+                if (!response.ok) throw new Error('获取文件失败');
+                
+                const modal = document.getElementById('preview-modal');
+                const previewTitle = document.getElementById('preview-title');
+                const previewContent = document.getElementById('preview-content');
+                
+                previewTitle.textContent = `预览: ${fileName}`;
+                const ext = fileName.split('.').pop().toLowerCase();
+                
+                if (fileName.endsWith('.pdf')) {
+                    // 使用PDF.js预览PDF文件
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    
+                    // 创建PDF.js容器，使用唯一ID避免冲突
+                    previewContent.innerHTML = `
+                        <div style="width: 100%; height: 60vh; overflow: auto;">
+                            <div id="pdf-container" style="text-align: center;"></div>
+                        </div>
+                        <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span id="pdf-page-info">第 1 页 / 共 0 页</span>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="action-btn" id="pdf-prev-page" disabled>
+                                    <i class="fas fa-chevron-left"></i> 上一页
+                                </button>
+                                <button class="action-btn" id="pdf-next-page" disabled>
+                                    下一页 <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    modal.style.display = 'block';
+                    
+                    // 加载PDF
+                    const loadingTask = pdfjsLib.getDocument(url);
+                    loadingTask.promise.then(function(pdf) {
+                        const numPages = pdf.numPages;
+                        document.getElementById('pdf-page-info').textContent = `第 1 页 / 共 ${numPages} 页`;
+                        
+                        let currentPage = 1;
+                        
+                        // 渲染当前页
+                        function renderPage(pageNum) {
+                            pdf.getPage(pageNum).then(function(page) {
+                                const container = document.getElementById('pdf-container');
+                                container.innerHTML = '';
+                                
+                                const canvas = document.createElement('canvas');
+                                canvas.id = 'pdf-canvas';
+                                canvas.style.maxWidth = '100%';
+                                container.appendChild(canvas);
+                                
+                                const context = canvas.getContext('2d');
+                                
+                                const viewport = page.getViewport({ scale: 1.5 });
+                                canvas.height = viewport.height;
+                                canvas.width = viewport.width;
+                                
+                                const renderContext = {
+                                    canvasContext: context,
+                                    viewport: viewport
+                                };
+                                
+                                page.render(renderContext);
+                                
+                                // 更新页码信息
+                                document.getElementById('pdf-page-info').textContent = `第 ${pageNum} 页 / 共 ${numPages} 页`;
+                                
+                                // 更新按钮状态
+                                document.getElementById('pdf-prev-page').disabled = pageNum === 1;
+                                document.getElementById('pdf-next-page').disabled = pageNum === numPages;
+                            });
+                        }
+                        
+                        // 初始渲染第一页
+                        renderPage(1);
+                        
+                        // 绑定分页按钮事件
+                        document.getElementById('pdf-prev-page').addEventListener('click', function() {
+                            if (currentPage > 1) {
+                                currentPage--;
+                                renderPage(currentPage);
+                            }
+                        });
+                        
+                        document.getElementById('pdf-next-page').addEventListener('click', function() {
+                            if (currentPage < numPages) {
+                                currentPage++;
+                                renderPage(currentPage);
+                            }
+                        });
+                    });
+                } else if (['mp4', 'avi', 'mov', 'mkv'].includes(ext)) {
+                    // 视频预览
+                    const url = `/api/download/${fileId}`;
+                    previewContent.innerHTML = `
+                        <video controls style="width: 100%; max-height: 60vh; border-radius: 8px;">
+                            <source src="${url}" type="video/mp4">
+                            您的浏览器不支持视频播放
+                        </video>
+                    `;
+                    modal.style.display = 'block';
+                } else if (['mp3', 'wav'].includes(ext)) {
+                    // 音频预览
+                    const url = `/api/download/${fileId}`;
+                    previewContent.innerHTML = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-music" style="font-size: 5rem; color: var(--blue); margin-bottom: 1.5rem;"></i>
+                            <h3 style="color: var(--blue); margin-bottom: 1rem;">${fileName}</h3>
+                            <audio controls style="width: 100%;">
+                                <source src="${url}" type="audio/mpeg">
+                                您的浏览器不支持音频播放
+                            </audio>
+                        </div>
+                    `;
+                    modal.style.display = 'block';
+                } else if (fileType.startsWith('image/')) {
+                    // 预览图片
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    previewContent.innerHTML = `<img src="${url}" class="preview-image" alt="${fileName}">`;
+                    modal.style.display = 'block';
+                } else if (fileName.endsWith('.txt')) {
+                    // 预览文本文件
+                    const text = await response.text();
+                    previewContent.innerHTML = `<pre class="preview-text">${text}</pre>`;
+                    modal.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('预览失败:', error);
+                alert('文件预览失败');
+            }
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            const modal = document.getElementById('preview-modal');
+            modal.style.display = 'none';
+            // 清理预览内容
+            const previewContent = document.getElementById('preview-content');
+            previewContent.innerHTML = '';
+        }
+
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modal = document.getElementById('preview-modal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // 页面加载时获取文件列表
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFiles();
+        });
+    </script>
+</body>
+</html>

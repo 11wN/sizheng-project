@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们 - 红色思政网</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', '微软雅黑', sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            color: #1e1e1e;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        :root {
+            --blue-dark: #b22222;
+            --blue-bright: #3498db;
+            --yellow-soft: #f9c74f;
+            --red-deep: #b22222;
+            --white: #fff;
+        }
+
+        .about-header {
+            background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-bright) 100%);
+            padding: 3rem 1.5rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            border-bottom: 6px solid var(--yellow-soft);
+        }
+
+        .about-header h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .about-header p {
+            font-size: 1.2rem;
+            color: #ecf0f1;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .breadcrumb {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s;
+        }
+
+        .breadcrumb a:hover {
+            background: rgba(255,255,255,0.3);
+            color: var(--yellow-soft);
+        }
+
+        .content-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .about-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-left: 6px solid var(--blue-dark);
+        }
+
+        .section-title {
+            color: var(--blue-dark);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 2rem 0;
+        }
+
+        .team-member {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-color: var(--blue-dark);
+        }
+
+        .member-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-bright) 100%);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+
+        .member-name {
+            color: var(--blue-dark);
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-role {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .member-description {
+            color: #555;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        .contact-info {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .info-item:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        .info-icon {
+            font-size: 2.5rem;
+            color: var(--blue-dark);
+            margin-bottom: 1rem;
+        }
+
+        .info-title {
+            color: var(--blue-dark);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-content {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .sub-modules {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .module-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .module-card:hover {
+            background: white;
+            border-color: var(--blue-dark);
+            transform: translateY(-3px);
+        }
+
+        .module-icon {
+            font-size: 2.5rem;
+            color: var(--blue-dark);
+            margin-bottom: 1rem;
+        }
+
+        .module-title {
+            color: var(--blue-dark);
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="about-header">
+        <div class="breadcrumb">
+            <a href="wangye.html"><i class="fas fa-home"></i> 首页</a>
+            <span style="background: rgba(255,255,255,0.3); color: var(--yellow-soft);">关于我们</span>
+        </div>
+        <h1><i class="fas fa-info-circle"></i> 关于红色思政网</h1>
+        <p>传承红色基因 · 弘扬革命精神 · 服务思政教育</p>
+    </header>
+
+    <div class="content-container">
+        <!-- 网站介绍 -->
+        <div class="about-section">
+            <h2 class="section-title"><i class="fas fa-globe"></i> 网站简介</h2>
+            <p style="color: #555; line-height: 1.8; font-size: 1.1rem;">
+                红色思政网是一个致力于传承红色基因、弘扬革命精神的思政教育平台。
+                我们汇集了丰富的红色资料、实践案例和研究成果，为思政教育工作者和学生提供全面的学习资源。
+            </p>
+            <p style="color: #555; line-height: 1.8; font-size: 1.1rem; margin-top: 1rem;">
+                平台以习近平新时代中国特色社会主义思想为指导，坚持立德树人根本任务，
+                通过数字化手段推动思政教育创新发展，为培养社会主义建设者和接班人贡献力量。
+            </p>
+        </div>
+
+        <!-- 团队介绍 -->
+        <div class="about-section">
+            <h2 class="section-title"><i class="fas fa-users"></i> 团队介绍</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="member-name">思政教育专家</div>
+                    <div class="member-role">学术指导</div>
+                    <div class="member-description">
+                        长期从事思政教育研究，具有丰富的教学经验和理论功底
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <div class="member-name">技术开发团队</div>
+                    <div class="member-role">技术支持</div>
+                    <div class="member-description">
+                        负责平台的技术开发和维护，确保系统稳定运行
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="member-name">内容编辑团队</div>
+                    <div class="member-role">内容管理</div>
+                    <div class="member-description">
+                        负责资料整理、内容审核和平台内容建设
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 子模块导航 -->
+        <div class="sub-modules">
+            <h2 class="section-title"><i class="fas fa-sitemap"></i> 相关信息</h2>
+            <div class="modules-grid">
+                <a href="jigoujieshao.html" class="module-card">
+                    <div class="module-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="module-title">团队介绍</div>
+                    <div class="module-description">了解我们的团队成员和分工</div>
+                </a>
+                <a href="fazhanlicheng.html" class="module-card">
+                    <div class="module-icon">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <div class="module-title">团队宣言</div>
+                    <div class="module-description">我们的理念、使命和价值观</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('关于我们页面加载完成');
+        });
+    </script>
+</body>
+</html>

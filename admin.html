@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件管理后台 - 红色思政网</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', '微软雅黑', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #b22222 0%, #8b0000 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: #b22222;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #b22222;
+        }
+
+        .controls {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        select, input {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .file-list {
+            padding: 1.5rem;
+        }
+
+        .file-item {
+            display: grid;
+            grid-template-columns: 50px 1fr auto auto auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+
+        .file-item:hover {
+            background: #f8f9fa;
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+            color: #b22222;
+            text-align: center;
+        }
+
+        .file-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .file-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .file-size {
+            text-align: right;
+            color: #666;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-download {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .file-item {
+                grid-template-columns: 40px 1fr;
+                gap: 0.5rem;
+            }
+            
+            .file-size, .file-actions {
+                grid-column: 1 / -1;
+                justify-self: start;
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-cogs"></i> 文件管理后台</h1>
+            <p>红色思政网 - 上传文件管理系统</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <i class="fas fa-file"></i>
+                <div class="stat-number" id="total-files">0</div>
+                <div>总文件数</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-folder"></i>
+                <div class="stat-number" id="total-modules">7</div>
+                <div>模块数量</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-database"></i>
+                <div class="stat-number" id="total-size">0 MB</div>
+                <div>存储空间</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <div class="stat-number" id="total-uploaders">0</div>
+                <div>上传用户</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="filter-group">
+                <select id="module-filter">
+                    <option value="">所有模块</option>
+                    <option value="时政要闻">时政要闻</option>
+                    <option value="红色资料">红色资料</option>
+                    <option value="思政实践">思政实践</option>
+                    <option value="校园采风">校园采风</option>
+                    <option value="心得体会">心得体会</option>
+                    <option value="关于我们">关于我们</option>
+                    <option value="留言板">留言板</option>
+                </select>
+                <select id="type-filter">
+                    <option value="">所有类型</option>
+                    <option value="image">图片</option>
+                    <option value="document">文档</option>
+                    <option value="video">视频</option>
+                    <option value="other">其他</option>
+                </select>
+                <input type="text" id="search-input" class="search-box" placeholder="搜索文件名或描述...">
+                <button class="btn" onclick="loadFiles()" style="background: #b22222; color: white;">
+                    <i class="fas fa-sync-alt"></i> 刷新
+                </button>
+                <button class="btn" onclick="toggleSelectAll()" style="background: #3498db; color: white;">
+                    <i class="fas fa-check-square"></i> 全选
+                </button>
+                <button class="btn" onclick="deleteSelected()" style="background: #e74c3c; color: white;">
+                    <i class="fas fa-trash-alt"></i> 批量删除
+                </button>
+            </div>
+        </div>
+
+        <div class="file-list" id="file-list">
+            <div class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <h3>暂无文件</h3>
+                <p>上传的文件将显示在这里</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取文件图标
+        function getFileIcon(fileType, fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            
+            if (fileType.startsWith('image/')) {
+                return 'fa-file-image';
+            } else if (fileType.startsWith('video/')) {
+                return 'fa-file-video';
+            } else if (fileType.includes('pdf')) {
+                return 'fa-file-pdf';
+            } else if (fileType.includes('word') || fileType.includes('document')) {
+                return 'fa-file-word';
+            } else if (fileType.includes('powerpoint') || fileType.includes('presentation')) {
+                return 'fa-file-powerpoint';
+            } else if (ext === 'txt') {
+                return 'fa-file-alt';
+            } else {
+                return 'fa-file';
+            }
+        }
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // 格式化时间
+        function formatTime(timestamp) {
+            return new Date(timestamp).toLocaleString('zh-CN');
+        }
+
+        // 获取文件类型分类
+        function getFileCategory(fileType) {
+            if (fileType.startsWith('image/')) return 'image';
+            if (fileType.startsWith('video/')) return 'video';
+            if (fileType.includes('pdf') || fileType.includes('word') || 
+                fileType.includes('document') || fileType.includes('powerpoint') || 
+                fileType.includes('presentation')) return 'document';
+            return 'other';
+        }
+
+        // 加载文件列表（获取所有数据用于管理后台筛选）
+        async function loadFiles() {
+            try {
+                const moduleFilter = document.getElementById('module-filter').value;
+                const typeFilter = document.getElementById('type-filter').value;
+                const searchQuery = document.getElementById('search-input').value;
+                
+                // 管理后台需要获取所有数据进行筛选，所以设置较大的page_size
+                let url = '/api/uploads?page=1&page_size=10000';
+                if (moduleFilter) {
+                    url += `&module=${encodeURIComponent(moduleFilter)}`;
+                }
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('获取文件列表失败');
+                
+                const result = await response.json();
+                let files = [];
+                
+                // 兼容新旧API格式
+                if (Array.isArray(result)) {
+                    files = result;
+                } else if (result && Array.isArray(result.files)) {
+                    files = result.files;
+                }
+                
+                // 应用过滤器
+                if (typeFilter) {
+                    files = files.filter(file => getFileCategory(file.file_type) === typeFilter);
+                }
+                
+                if (searchQuery) {
+                    const query = searchQuery.toLowerCase();
+                    files = files.filter(file => 
+                        file.original_name.toLowerCase().includes(query) ||
+                        (file.description && file.description.toLowerCase().includes(query))
+                    );
+                }
+                
+                displayFiles(files);
+                updateStats(files);
+                
+            } catch (error) {
+                console.error('加载文件错误:', error);
+                document.getElementById('file-list').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>加载失败</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 显示文件列表
+        function displayFiles(files) {
+            const fileList = document.getElementById('file-list');
+            
+            if (files.length === 0) {
+                fileList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open"></i>
+                        <h3>暂无文件</h3>
+                        <p>当前筛选条件下没有找到文件</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 存储当前文件列表供批量操作使用
+            window.currentFiles = files;
+            
+            fileList.innerHTML = files.map(file => `
+                <div class="file-item">
+                    <input type="checkbox" class="file-checkbox" data-id="${file.id}" style="margin-right: 10px; width: 18px; height: 18px;">
+                    <div class="file-icon">
+                        <i class="fas ${getFileIcon(file.file_type, file.original_name)}"></i>
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name">${file.original_name}</div>
+                        <div class="file-meta">
+                            <strong>模块:</strong> ${file.module_name} | 
+                            <strong>上传者:</strong> ${file.uploader} | 
+                            <strong>时间:</strong> ${formatTime(file.upload_time)}
+                            ${file.description ? ` | <strong>描述:</strong> ${file.description}` : ''}
+                        </div>
+                    </div>
+                    <div class="file-size">${formatFileSize(file.file_size)}</div>
+                    <div class="file-actions">
+                        <button class="btn btn-download" onclick="downloadFile(${file.id})">
+                            <i class="fas fa-download"></i> 下载
+                        </button>
+                        <button class="btn btn-delete" onclick="deleteFile(${file.id})">
+                            <i class="fas fa-trash"></i> 删除
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 全选/取消全选
+        function toggleSelectAll() {
+            const checkboxes = document.querySelectorAll('.file-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(cb => {
+                cb.checked = !allChecked;
+            });
+        }
+        
+        // 批量删除选中文件
+        async function deleteSelected() {
+            const checkboxes = document.querySelectorAll('.file-checkbox:checked');
+            
+            if (checkboxes.length === 0) {
+                alert('请选择要删除的文件');
+                return;
+            }
+            
+            if (!confirm(`确定要删除选中的 ${checkboxes.length} 个文件吗？此操作不可撤销！`)) {
+                return;
+            }
+            
+            let successCount = 0;
+            let failCount = 0;
+            
+            for (const checkbox of checkboxes) {
+                const fileId = checkbox.dataset.id;
+                
+                try {
+                    const response = await fetch(`/api/delete/${fileId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                    }
+                } catch (error) {
+                    failCount++;
+                }
+            }
+            
+            alert(`删除完成！成功: ${successCount} 个，失败: ${failCount} 个`);
+            
+            // 重新加载文件列表
+            loadFiles();
+        }
+
+        // 更新统计信息
+        function updateStats(files) {
+            document.getElementById('total-files').textContent = files.length;
+            
+            const totalSize = files.reduce((sum, file) => sum + file.file_size, 0);
+            document.getElementById('total-size').textContent = formatFileSize(totalSize);
+            
+            const uploaders = new Set(files.map(file => file.uploader));
+            document.getElementById('total-uploaders').textContent = uploaders.size;
+        }
+
+        // 下载文件
+        async function downloadFile(fileId) {
+            try {
+                window.open(`/api/download/${fileId}`, '_blank');
+            } catch (error) {
+                alert('下载失败: ' + error.message);
+            }
+        }
+
+        // 删除文件
+        async function deleteFile(fileId) {
+            if (!confirm('确定要删除这个文件吗？此操作不可撤销。')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/delete/${fileId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) throw new Error('删除失败');
+                
+                const result = await response.json();
+                alert('文件删除成功');
+                loadFiles();
+                
+            } catch (error) {
+                alert('删除失败: ' + error.message);
+            }
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFiles();
+            
+            // 添加搜索和过滤事件监听
+            document.getElementById('module-filter').addEventListener('change', loadFiles);
+            document.getElementById('type-filter').addEventListener('change', loadFiles);
+            document.getElementById('search-input').addEventListener('input', loadFiles);
+        });
+    </script>
+</body>
+</html>
