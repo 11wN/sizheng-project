@@ -182,7 +182,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
     });
 });
 
-// 文件下载接口（重定向到 Vercel CDN 静态文件）
+// 文件下载接口（重定向到 GitHub Raw）
 app.get('/api/download/:id', (req, res) => {
     const fileId = req.params.id;
 
@@ -197,9 +197,9 @@ app.get('/api/download/:id', (req, res) => {
             return;
         }
 
-        // 重定向到 Vercel CDN 上的静态文件路径
-        const staticUrl = `/uploads/${encodeURIComponent(row.module_name)}/${row.file_name}`;
-        res.redirect(staticUrl);
+        // 重定向到 GitHub Raw 静态文件
+        const rawUrl = `https://raw.githubusercontent.com/11wN/sizheng-project/main/uploads/${encodeURIComponent(row.module_name)}/${row.file_name}`;
+        res.redirect(rawUrl);
     });
 });
 
