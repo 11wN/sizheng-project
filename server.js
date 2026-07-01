@@ -237,6 +237,19 @@ app.delete('/api/upload/:id', (req, res) => {
     });
 });
 
+// 健康检查端点
+app.get('/ping', (req, res) => {
+    const testDir = fs.readdirSync(__dirname).slice(0, 10);
+    res.json({
+        status: 'ok',
+        time: new Date().toISOString(),
+        cwd: __dirname,
+        files: testDir,
+        hasUploads: fs.existsSync('./uploads'),
+        hasIndex: fs.existsSync('./index.html')
+    });
+});
+
 // 启动服务器
 app.listen(port, () => {
     console.log(`服务器运行在 http://localhost:${port}`);
