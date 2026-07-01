@@ -2,59 +2,51 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const cors = require('cors');
-const Database = require('better-sqlite3');
 const fs = require('fs');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// 中间件配置
+// 中间件
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 app.use('/uploads', express.static('uploads'));
 
-// 数据库路径（Vercel 上复制到 /tmp 以支持读写）
-const DB_PATH = process.env.VERCEL ? '/tmp/uploads.db' : './uploads.db';
-if (process.env.VERCEL && !fs.existsSync(DB_PATH)) {
-    fs.copyFileSync('./uploads.db', DB_PATH);
-    console.log('数据库已复制到 /tmp/');
+// 数据文件路径（Vercel 上复制到 /tmp 以支持读写）
+const isVercel = !!process.env.VERCEL;
+const DATA_PATH = isVercel ? '/tmp/uploads.json' : './uploads.json';
+if (isVercel && !fs.existsSync(DATA_PATH)) {
+    fs.copyFileSync('./uploads.json', DATA_PATH);
+    console.log('数据文件已复制到 /tmp/');
 }
 
-// 创建数据库连接（better-sqlite3 同步 API）
-let db;
-try {
-    db = new Database(DB_PATH);
-    console.log('成功连接到SQLite数据库');
-} catch (err) {
-    console.error('数据库连接错误:', err.message);
-    process.exit(1);
+// 加载数据
+function loadData() {
+    try {
+        return JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8'));
+    } catch (err) {
+        console.error('读取数据错误:', err.message);
+        return [];
+    }
 }
 
-// 初始化数据库表
-db.exec(`
-    CREATE TABLE IF NOT EXISTS uploads (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        module_name TEXT NOT NULL,
-        sub_module TEXT,
-        file_name TEXT NOT NULL,
-        original_name TEXT NOT NULL,
-        file_size INTEGER NOT NULL,
-        file_type TEXT NOT NULL,
-        upload_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-        description TEXT,
-        uploader TEXT DEFAULT '匿名'
-    )
-`);
-console.log('数据表已就绪');
+// 保存数据
+function saveData(data) {
+    try {
+        fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2), 'utf-8');
+    } catch (err) {
+        console.error('保存数据错误:', err.message);
+    }
+}
 
-// 创建上传目录（Vercel 只能写 /tmp，本地用 ./uploads）
-const uploadsDir = process.env.VERCEL ? '/tmp/uploads' : './uploads';
+// 创建上传目录
+const uploadsDir = isVercel ? '/tmp/uploads' : './uploads';
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// 配置multer文件上传
+// 配置multer
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const moduleDir = path.join(uploadsDir, req.body.module || 'general');
@@ -80,7 +72,6 @@ const fileFilter = (req, file, cb) => {
         'video/mp4', 'video/mpeg', 'video/quicktime',
         'text/plain', 'application/octet-stream'
     ];
-
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {
@@ -91,83 +82,76 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
-    limits: {
-        fileSize: 50 * 1024 * 1024
-    }
+    limits: { fileSize: 50 * 1024 * 1024 }
 });
 
-// API路由
+// 自动生成自增ID
+function nextId(data) {
+    return data.length > 0 ? Math.max(...data.map(r => r.id)) + 1 : 1;
+}
 
-// 获取上传文件列表
+// =========== API 路由 ===========
+
+// 获取文件列表
 app.get('/api/uploads', (req, res) => {
     try {
-        const { module: moduleName, sub_module: subModule } = req.query;
-        let sql = 'SELECT * FROM uploads';
-        let params = [];
+        let data = loadData();
+        const { module: moduleName } = req.query;
 
         if (moduleName) {
-            sql += ' WHERE module_name = ?';
-            params.push(moduleName);
-            if (subModule) {
-                sql += ' AND sub_module = ?';
-                params.push(subModule);
-            }
+            data = data.filter(r => r.module_name === moduleName);
         }
 
-        sql += ' ORDER BY upload_time DESC';
-
-        const rows = db.prepare(sql).all(...params);
-        res.json(rows);
+        data.sort((a, b) => (b.upload_time || '').localeCompare(a.upload_time || ''));
+        res.json(data);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// 文件上传接口
+// 文件上传
 app.post('/api/upload', upload.single('file'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: '请选择要上传的文件' });
     }
 
-    const { module, sub_module, description, uploader } = req.body;
-
     try {
-        const stmt = db.prepare(`INSERT INTO uploads (module_name, sub_module, file_name, original_name, file_size, file_type, description, uploader)
-                               VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
-        const result = stmt.run(
-            module || 'general',
-            sub_module || null,
-            req.file.filename,
-            req.file.originalname,
-            req.file.size,
-            req.file.mimetype,
-            description || '',
-            uploader || '匿名'
-        );
+        const { module, sub_module, description, uploader } = req.body;
+        const data = loadData();
+        const newId = nextId(data);
+
+        const record = {
+            id: newId,
+            module_name: module || 'general',
+            sub_module: sub_module || null,
+            file_name: req.file.filename,
+            original_name: req.file.originalname,
+            file_size: req.file.size,
+            file_type: req.file.mimetype,
+            upload_time: new Date().toISOString(),
+            description: description || '',
+            uploader: uploader || '匿名'
+        };
+
+        data.push(record);
+        saveData(data);
 
         res.json({
             success: true,
             message: '文件上传成功',
-            fileId: result.lastInsertRowid,
-            fileData: {
-                module_name: module || 'general',
-                file_name: req.file.filename,
-                original_name: req.file.originalname,
-                file_size: req.file.size,
-                file_type: req.file.mimetype,
-                description: description || '',
-                uploader: uploader || '匿名'
-            }
+            fileId: newId,
+            fileData: record
         });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// 文件下载接口（重定向到 GitHub Raw）
+// 文件下载（重定向到 GitHub Raw）
 app.get('/api/download/:id', (req, res) => {
     try {
-        const row = db.prepare('SELECT * FROM uploads WHERE id = ?').get(req.params.id);
+        const data = loadData();
+        const row = data.find(r => r.id === parseInt(req.params.id));
 
         if (!row) {
             return res.status(404).json({ error: '文件不存在' });
@@ -180,41 +164,41 @@ app.get('/api/download/:id', (req, res) => {
     }
 });
 
-// 删除文件接口
+// 文件删除
 app.delete('/api/upload/:id', (req, res) => {
     try {
-        const row = db.prepare('SELECT * FROM uploads WHERE id = ?').get(req.params.id);
+        const data = loadData();
+        const idx = data.findIndex(r => r.id === parseInt(req.params.id));
 
-        if (!row) {
+        if (idx === -1) {
             return res.status(404).json({ error: '文件不存在' });
         }
 
+        const row = data[idx];
         const filePath = path.join(uploadsDir, row.module_name, row.file_name);
 
         try {
-            fs.unlinkSync(filePath);
+            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
         } catch (err) {
-            if (err.code !== 'ENOENT') {
-                console.error('删除文件错误:', err);
-            }
+            console.error('删除文件错误:', err);
         }
 
-        db.prepare('DELETE FROM uploads WHERE id = ?').run(req.params.id);
+        data.splice(idx, 1);
+        saveData(data);
+
         res.json({ success: true, message: '文件删除成功' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// 健康检查端点
+// 健康检查
 app.get('/ping', (req, res) => {
-    const testDir = fs.readdirSync(__dirname).slice(0, 10);
     res.json({
         status: 'ok',
         time: new Date().toISOString(),
         cwd: __dirname,
-        files: testDir,
-        hasUploads: fs.existsSync('./uploads'),
+        recordCount: loadData().length,
         hasIndex: fs.existsSync('./index.html')
     });
 });
