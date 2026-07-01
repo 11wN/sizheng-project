@@ -14,8 +14,15 @@ app.use(express.json());
 app.use(express.static(__dirname)); // 提供静态文件服务
 app.use('/uploads', express.static('uploads')); // 让上传的文件能通过 URL 访问
 
+// 数据库路径（Vercel 上复制到 /tmp 以支持读写）
+const DB_PATH = process.env.VERCEL ? '/tmp/uploads.db' : './uploads.db';
+if (process.env.VERCEL && !fs.existsSync(DB_PATH)) {
+    fs.copyFileSync('./uploads.db', DB_PATH);
+    console.log('数据库已复制到 /tmp/');
+}
+
 // 创建数据库连接
-const db = new sqlite3.Database('./uploads.db', (err) => {
+const db = new sqlite3.Database(DB_PATH, (err) => {
     if (err) {
         console.error('数据库连接错误:', err.message);
     } else {
@@ -50,8 +57,8 @@ function initializeDatabase() {
     });
 }
 
-// 创建上传目录
-const uploadsDir = './uploads';
+// 创建上传目录（Vercel 只能写 /tmp，本地用 ./uploads）
+const uploadsDir = process.env.VERCEL ? '/tmp/uploads' : './uploads';
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
@@ -175,29 +182,24 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
     });
 });
 
-// 文件下载接口
+// 文件下载接口（重定向到 Vercel CDN 静态文件）
 app.get('/api/download/:id', (req, res) => {
     const fileId = req.params.id;
-    
+
     db.get('SELECT * FROM uploads WHERE id = ?', [fileId], (err, row) => {
         if (err) {
             res.status(500).json({ error: err.message });
             return;
         }
-        
+
         if (!row) {
             res.status(404).json({ error: '文件不存在' });
             return;
         }
-        
-        const filePath = path.join(uploadsDir, row.module_name, row.file_name);
-        
-        if (!fs.existsSync(filePath)) {
-            res.status(404).json({ error: '文件不存在' });
-            return;
-        }
-        
-        res.download(filePath, row.original_name);
+
+        // 重定向到 Vercel CDN 上的静态文件路径
+        const staticUrl = `/uploads/${encodeURIComponent(row.module_name)}/${row.file_name}`;
+        res.redirect(staticUrl);
     });
 });
 
